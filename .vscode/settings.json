@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "philo.h": "c",
+        "__bit_reference": "c",
+        "__string": "c",
+        "cstring": "c"
+    }
+}

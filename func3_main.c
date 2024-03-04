@@ -114,10 +114,10 @@
 // 	(void)av;
 // 	if (ac <= 4 || ac >= 7)
 // 		show_options();
-// 	table.die_flag = 0;
+// 	table.dead_flag = 0;
 // 	parce_input(&table, av);
 // 	data_init(&table);
 // 	// philo_routine(&table);
-// 	// clean_up(&table); // free all when all philo are full || 1 philo died
+// 	// clean_up(&table); // free all when all philo are full || 1 philo deadd
 // 	return (0);
 // }

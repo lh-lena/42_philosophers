@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ohladkov <ohladkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ohladkov <ohladkov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:55:28 by ohladkov          #+#    #+#             */
-/*   Updated: 2024/03/02 19:31:50 by ohladkov         ###   ########.fr       */
+/*   Updated: 2024/03/03 23:10:53 by ohladkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ struct s_table
 	long	time_to_sleep;
 	long	max_meals;
 	long	start;
-	int		die_flag; // philo die or philo full
+	int		dead_flag; // philo dead or philo full
 	t_fork	*fork;
 	t_philo	*philos;
 };

@@ -35,20 +35,15 @@ int	try_to_eat(t_philo *philo)
 	else
 		return (1);
 	printf("%llu %d is eating\n", (get_current_time() - philo->table->start), id);
-	// philo->state = 0;
+	// printf("%llu %d is eating\n", get_current_time(), id);
+	philo->state = 0;
 	philo->meals_counter += 1;
-	usleep(philo->table->time_to_eat / 1000);
+	usleep(philo->table->time_to_eat);
 	philo->last_eat = get_current_time();
 	if (philo->meals_counter == philo->table->max_meals)
 	{
 		philo->full = 1;
 		printf("\tphilo->full %d\n", id);
-		//  ./philo 3 300 100 100 3
-	}
-	if ((get_current_time() - philo->last_eat) >= philo->table->time_to_die)
-	{
-		philo->table->die_flag = 1;
-		printf("%llu %d is died\n", (get_current_time() - philo->table->start), id);
 	}
 	if (philo->right_fork->lock == 1)
 	{
@@ -66,26 +61,26 @@ int	try_to_eat(t_philo *philo)
 
 void	to_sleep(t_philo *philo)
 {
-	if (philo->full == 1)
+	if (philo->full == 1 || philo->table->dead_flag == 1 || philo->meals_counter == 0)
 		return ;
 	philo->state = 2;
 	printf("%llu %d is sleeping\n", (get_current_time() - philo->table->start), philo->philo_id);
-	usleep(philo->table->time_to_sleep / 1000);
+	usleep(philo->table->time_to_sleep);
 	if ((get_current_time() - philo->last_eat) >= philo->table->time_to_die)
-		philo->table->die_flag = 1;
+		philo->table->dead_flag = 1;
 	philo->state = 1;
 }
 
 void	to_think(t_philo *philo)
 {
-	if (philo->full == 1)
+	if (philo->full == 1 || philo->table->dead_flag == 1 || philo->meals_counter == 0)
 		return ;
 	if (philo->state != 0 && philo->state != 2)
 	{
 		printf("%llu %d is thinking\n", (get_current_time() - philo->table->start), philo->philo_id);
-		usleep(philo->table->time_to_sleep / 1000);
+		usleep(philo->table->time_to_sleep);
 		if ((get_current_time() - philo->last_eat) >= philo->table->time_to_die)
-			philo->table->die_flag = 1;
+			philo->table->dead_flag = 1;
 		philo->state = 2;
 	}
 }
@@ -122,7 +117,7 @@ int	try_to_eat(t_philo *philo)
 		if (philo->meals_counter == philo->table->max_meals)
 			philo->full = 1;
 		if ((get_current_time() - philo->last_eat) >= philo->table->time_to_die)
-			philo->table->die_flag = 1;
+			philo->table->dead_flag = 1;
 		return (0);
 	}
 	return (1);

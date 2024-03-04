@@ -78,6 +78,6 @@
 // 	parce_input(&table, av);
 // 	data_init(&table);
 // 	// philo_routine(&table);
-// 	// free_stack(&table); // when all philo are full || 1 philo died
+// 	// free_stack(&table); // when all philo are full || 1 philo deadd
 // 	return (0);
 // }

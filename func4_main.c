@@ -111,9 +111,9 @@
 // 	if (ac <= 4 || ac >= 7)
 // 		show_options();
 // 	memset(table, 0, ft_atoi(av[1]) * sizeof(t_table));
-// 	// table.die_flag = 0;
+// 	// table.dead_flag = 0;
 // 	parce_input(&table, av);
 // 	data_init(&table);
-// 	// clean_up(&table); // free all when all philo are full || 1 philo died
+// 	// clean_up(&table); // free all when all philo are full || 1 philo deadd
 // 	return (0);
 // }

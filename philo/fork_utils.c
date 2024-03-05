@@ -14,19 +14,19 @@ void	pick_up_fork(t_philo *philo)
 int	try_to_eat(t_philo *philo)
 {
 	int	id;
+	// int	nbr;
 
 	if (philo->full == 1)
 		return (1);
 	id = philo->philo_id;
-	if (philo->right_fork->lock == 0) // && philo->left_fork->lock == 0
+	// nbr = philo->table->philo_nbr;
+	if (philo->right_fork->lock == 0) // && philo->left_fork->lock == 0 // && philo->table->philos[(id - 1) % nbr].state != 0 //  && philo->table->philos[(id - 1) % nbr].state != 0
 	{
 		pthread_mutex_lock(&philo->right_fork->fork_mtx);
 		philo->right_fork->lock = 1;
 		printf("%llu %d has taken a right fork %i\n", (get_current_time() - philo->table->start), id, philo->right_fork->fork_id);
 	}
-	// else
-	// 	return (1);
-	if (philo->left_fork->lock == 0) // && philo->left_fork->fork_id > philo->right_fork->fork_id
+	if (philo->left_fork->lock == 0) // && philo->left_fork->fork_id > philo->right_fork->fork_id //  && philo->table->philos[(id + 1) % nbr].state != 0 //  && philo->table->philos[(id + 1) % nbr].state != 0
 	{
 		pthread_mutex_lock(&philo->left_fork->fork_mtx);
 		philo->left_fork->lock = 1;
@@ -35,7 +35,6 @@ int	try_to_eat(t_philo *philo)
 	else
 		return (1);
 	printf("%llu %d is eating\n", (get_current_time() - philo->table->start), id);
-	// printf("%llu %d is eating\n", get_current_time(), id);
 	philo->state = 0;
 	philo->meals_counter += 1;
 	usleep(philo->table->time_to_eat);
@@ -44,16 +43,22 @@ int	try_to_eat(t_philo *philo)
 	{
 		philo->full = 1;
 		printf("\tphilo->full %d\n", id);
+		//  ./philo 3 300 100 100 3
+	}
+	if ((get_current_time() - philo->last_eat) >= philo->table->time_to_die)
+	{
+		philo->table->dead_flag = 1;
+		printf("%llu %d is died\n", (get_current_time() - philo->table->start), id);
 	}
 	if (philo->right_fork->lock == 1)
 	{
-		philo->right_fork->lock = 0;
 		pthread_mutex_unlock(&philo->right_fork->fork_mtx);
+		philo->right_fork->lock = 0;
 	}
 	if (philo->left_fork->lock == 1)
 	{
-		philo->left_fork->lock = 0;
 		pthread_mutex_unlock(&philo->left_fork->fork_mtx);
+		philo->left_fork->lock = 0;
 	}
 	to_sleep(philo);
 	return (0);
@@ -61,24 +66,34 @@ int	try_to_eat(t_philo *philo)
 
 void	to_sleep(t_philo *philo)
 {
-	if (philo->full == 1 || philo->table->dead_flag == 1 || philo->meals_counter == 0)
+	if (philo->full == 1 || philo->table->dead_flag == 1)
 		return ;
 	philo->state = 2;
 	printf("%llu %d is sleeping\n", (get_current_time() - philo->table->start), philo->philo_id);
 	usleep(philo->table->time_to_sleep);
+	// ft_usleep(philo->table->time_to_sleep);
 	if ((get_current_time() - philo->last_eat) >= philo->table->time_to_die)
+	{
 		philo->table->dead_flag = 1;
+		printf("\t%llu %d is dead\n", (get_current_time() - philo->table->start), philo->philo_id);
+	}
 	philo->state = 1;
 }
 
 void	to_think(t_philo *philo)
 {
+	// int	id;
+	// int	nbr;
+
+	// id = philo->philo_id;
+	// nbr = philo->table->philo_nbr;
 	if (philo->full == 1 || philo->table->dead_flag == 1 || philo->meals_counter == 0)
 		return ;
 	if (philo->state != 0 && philo->state != 2)
 	{
 		printf("%llu %d is thinking\n", (get_current_time() - philo->table->start), philo->philo_id);
-		usleep(philo->table->time_to_sleep);
+		// usleep(philo->table->time_to_sleep / 1000);
+		usleep(philo->table->time_to_sleep / 3);
 		if ((get_current_time() - philo->last_eat) >= philo->table->time_to_die)
 			philo->table->dead_flag = 1;
 		philo->state = 2;

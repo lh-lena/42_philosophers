@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ohladkov <ohladkov@student.42.fr>          +#+  +:+       +#+         #
+#    By: ohladkov <ohladkov@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/05 14:59:53 by ohladkov          #+#    #+#              #
-#    Updated: 2024/03/02 18:18:38 by ohladkov         ###   ########.fr        #
+#    Updated: 2024/03/05 18:31:25 by ohladkov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ OBGS	= $(SRCS:.c=.o)
 
 CC		= cc
 RM		= rm -f
-CFLAGS	= -Wall -Werror -Wextra -g
+CFLAGS	= -Wall -Werror -Wextra -g -fsanitize=thread
 # -pthread
 #-g -fsanitize=thread
 #-g -fsanitize=address
@@ -31,6 +31,7 @@ $(NAME):	$(OBGS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+# valgrind --tool=helgrind ./philo 5 800 200 200
 run:
 	valgrind --tool=helgrind ./philo 5 800 200 200
 

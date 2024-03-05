@@ -55,3 +55,18 @@ int	parce_input(t_table *table, char **av)
     printf("table->time_to_sleep: %lu\n", table->time_to_sleep);
 	return (0);
 }
+
+void	check_mutex(t_table *table)
+{
+	int	i;
+
+	i = -1;
+	while (++i < table->philo_nbr)
+	{
+		if (table->fork[i].lock == 1)
+		{
+			pthread_mutex_unlock(&table->fork[i].fork_mtx);
+		}
+	}
+}
+

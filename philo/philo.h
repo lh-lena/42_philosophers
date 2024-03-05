@@ -6,7 +6,7 @@
 /*   By: ohladkov <ohladkov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:55:28 by ohladkov          #+#    #+#             */
-/*   Updated: 2024/03/03 23:10:53 by ohladkov         ###   ########.fr       */
+/*   Updated: 2024/03/05 18:21:47 by ohladkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ struct s_table
 	long	max_meals;
 	long	start;
 	int		dead_flag; // philo dead or philo full
+	pthread_mutex_t	mutex;
 	t_fork	*fork;
 	t_philo	*philos;
 };
@@ -87,6 +88,7 @@ int	try_to_eat(t_philo *philo);
 void	to_sleep(t_philo *philo);
 void	pick_up_fork(t_philo *philo);
 void	to_think(t_philo *philo);
+void	check_mutex(t_table *table);
 
 
 #endif

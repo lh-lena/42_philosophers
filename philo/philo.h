@@ -6,7 +6,7 @@
 /*   By: ohladkov <ohladkov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:55:28 by ohladkov          #+#    #+#             */
-/*   Updated: 2024/03/05 18:21:47 by ohladkov         ###   ########.fr       */
+/*   Updated: 2024/03/08 14:56:07 by ohladkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct s_philo
 	int			philo_id;
 	long		meals_counter;
 	int			full;
-	long		last_eat;
+	unsigned long		last_eat;
 	int			state;
 	t_fork		*left_fork;
 	t_fork		*right_fork;
@@ -63,8 +63,12 @@ struct s_table
 	long	time_to_sleep;
 	long	max_meals;
 	long	start;
-	int		dead_flag; // philo dead or philo full
+	int		dead_flag; // philo die or philo full
+	int		thread_nbr;
 	pthread_mutex_t	mutex;
+	pthread_mutex_t	mtx_action;
+	pthread_mutex_t	mtx_eat;
+	pthread_mutex_t	mtx_dead;
 	t_fork	*fork;
 	t_philo	*philos;
 };
@@ -79,16 +83,16 @@ int		data_init(t_table *table);
 int		parce_input(t_table *table, char **av);
 int		check_input(char **av);
 int		is_valid(int i);
-u_int64_t	get_current_time(void);
+unsigned long	get_current_time(void);
 int mtx_lock(t_fork *fork);
-int	ft_usleep(useconds_t time);
+int	ft_usleep(unsigned long time);
 
-
-int	try_to_eat(t_philo *philo);
+// int	try_to_eat(t_philo *philo);
+void	to_eat(t_philo *philo);
 void	to_sleep(t_philo *philo);
-void	pick_up_fork(t_philo *philo);
+int	pick_up_fork(t_philo *philo);
 void	to_think(t_philo *philo);
 void	check_mutex(t_table *table);
-
+int	check_philo_death(t_table *table);
 
 #endif

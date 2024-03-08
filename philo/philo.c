@@ -6,7 +6,7 @@
 /*   By: ohladkov <ohladkov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:55:18 by ohladkov          #+#    #+#             */
-/*   Updated: 2024/03/05 18:57:53 by ohladkov         ###   ########.fr       */
+/*   Updated: 2024/03/08 14:56:47 by ohladkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,45 +26,64 @@ int	data_init(t_table *table)
 	if (table->fork == NULL)
 		error_mes("Memory allocation failed for mutex");
 	table->start = get_current_time();
-	printf("\ttime: %ld\n", table->start);
-	printf("\tMAX_MEAL %ld\n", table->max_meals);
+	table->thread_nbr = 0;
+	table->dead_flag = 0;
+	printf("\tstart: %ld\n", table->start);
+	// printf("\tMAX_MEAL %ld\n", table->max_meals);
 	pthread_mutex_init(&table->mutex, NULL);
+	pthread_mutex_init(&table->mtx_action, NULL);
+	pthread_mutex_init(&table->mtx_eat, NULL);
+	pthread_mutex_init(&table->mtx_dead, NULL);
 	i = -1;
 	while (++i < table->philo_nbr)
 	{
-		table->fork[i].fork_id = i; // + 1
+		table->fork[i].fork_id = i;
 		table->fork[i].table = table;
 		table->fork[i].lock = 0;
 		if (pthread_mutex_init(&table->fork[i].fork_mtx, NULL) != 0)
 			error_mes("Mutex init has failed\n");
-		printf("mutex created: %d\n", i);
+		// printf("mutex created: %d\n", i);
 	}
 	i = -1;
 	while (++i < table->philo_nbr)
 	{
-		if (table->dead_flag == 1)
-			return (0);
+		// if (table->dead_flag == 1)
+		// 	return (0);
 		table->philos[i].table = table;
 		table->philos[i].philo_id = i + 1; // Philosopher IDs start from 1
 		table->philos[i].state = 1;
+		table->philos[i].meals_counter = 0;
 		table->philos[i].last_eat = table->start;
 		if (pthread_create(&table->philos[i].thread_id, NULL, philo_routine, &(table->philos[i])) != 0)
 			error_mes("Thread can't be created\n");
+		// printf("Thread created: %d\n", i);
+		table->thread_nbr += 1;
+		// if (table->dead_flag == 1)
+		// 	break ;
 	}
 	i = -1;
-	while (++i < table->philo_nbr)
+	while (++i < table->thread_nbr)
 	{
 		if (pthread_join(table->philos[i].thread_id, NULL) != 0)
 			error_mes("Thread join failed\n"); // return (1)
+		// printf("thread joined: %d\n", i);
 	}
 	check_mutex(table);
 	i = -1;
 	while (++i < table->philo_nbr)
 	{
 		if (pthread_mutex_destroy(&table->fork[i].fork_mtx) != 0)
-			error_mes("Thread join failed\n"); // return (2);
-		printf("mutex destroyed: %d\n", i);
+			error_mes("Mutex destroy failed\n"); // return (2);
+		// printf("mutex destroyed: %d\n", i);
 	}
+	if (pthread_mutex_destroy(&table->mutex) != 0)
+		error_mes("Mutex destroy failed\n"); // return (2);
+	if (pthread_mutex_destroy(&table->mtx_action) != 0)
+		error_mes("Mutex destroy failed\n"); // return (2);
+	if (pthread_mutex_destroy(&table->mtx_eat) != 0)
+		error_mes("Mutex destroy failed\n"); // return (2);
+	if (pthread_mutex_destroy(&table->mtx_dead) != 0)
+		error_mes("Mutex destroy failed\n"); // return (2);
 	// Free allocated memory
 	free(table->philos);
 	free(table->fork);
@@ -90,62 +109,31 @@ void *philo_routine(void *arg)
 	philo = (t_philo *)arg;
 	id = philo->philo_id;
 	nbr = philo->table->philo_nbr;
-	// philo->right_fork = &philo->table->fork[(id - 1) % nbr]; // fork id start from 1
 	philo->right_fork = &philo->table->fork[(id - 1) % nbr];
 	philo->left_fork = &philo->table->fork[(id) % nbr];
-	// printf("philo->left_fork %i\n", id);
-	// philo->left_fork = &philo->table->fork[id % nbr];// fork id start from 1
-	// printf("philo->left_fork %li\n", ((id) % nbr));      // 1 2 .. 0
-	// printf("philo->right_fork %li\n", ((id - 1) % nbr)); // 0 1 .. 5
- 	// printf("right %p\n", philo->right_fork);
-	// printf("left %p\n", philo->left_fork);
-
+	// if (philo->philo_id % 2)
+	// 	usleep(15000);
 	while (1)
 	{
-		if(philo->table->dead_flag == 1)
-			break ;
+		// if (philo->table->dead_flag == 1)
+		// 	break ;
 		if (philo->full == 1)
 			break ;
+		if (check_philo_death(philo->table))
+		{
+			// pthread_mutex_lock(&philo->table->mtx_action);
+			// philo->table->dead_flag = 1;
+			// pthread_mutex_unlock(&philo->table->mtx_action);
+			pthread_exit(NULL);
+		}
 		pthread_mutex_lock(&philo->table->mutex);
 		pick_up_fork(philo);
 		pthread_mutex_unlock(&philo->table->mutex);
-		// if (philo->right_fork->lock == 0)
-		// {
-		// 	pthread_mutex_lock(&philo->right_fork->fork_mtx);
-		// 	philo->right_fork->lock = 1;
-		// 	printf("%lu %d has taken a right fork %i\n", get_current_time(), id, philo->right_fork->fork_id);
-		// }
-		// if (philo->left_fork->lock == 0)
-		// {
-		// 	pthread_mutex_lock(&philo->left_fork->fork_mtx);
-		// 	philo->left_fork->lock = 1;
-		// 	printf("%lu %d has taken a left fork %i\n", get_current_time(), id, philo->left_fork->fork_id);
-		// }
-		// printf("%lu %d is eating\n", get_current_time(), id);
-		// ft_usleep(philo->table->time_to_eat);
-		// to_sleep(philo);
-		// if (philo->right_fork->lock == 1)
-		// {
-		// 	philo->right_fork->lock = 0;
-		// 	pthread_mutex_unlock(&philo->right_fork ->fork_mtx);
-		// }
-		// if (philo->left_fork->lock == 1)
-		// {
-		// 	philo->left_fork->lock = 0;
-		// 	pthread_mutex_unlock(&philo->left_fork->fork_mtx);
-			
-		// }
-		// printf("%lu %d is sleeping\n", get_current_time(), id);
-		// ft_usleep(100);
+		to_eat(philo);
+		to_sleep(philo);
 		to_think(philo);
-		// printf("%lu %d is thinking\n", get_current_time(), id);
-		if ((get_current_time() - philo->last_eat) >= philo->table->time_to_die)
-		{
-			philo->table->dead_flag = 1;
-			printf("\t%llu %d is deadd\n", (get_current_time() - philo->table->start), id);
-			break ;
-		}
-
+		// pthread_mutex_lock(&philo->table->mtx_eat);
+		// pthread_mutex_unlock(&philo->table->mtx_eat);
 	}
 	return((void *)0);
 }
@@ -164,6 +152,7 @@ int	main(int ac, char **av)
 	// clean_up(&table); // free all when all philo are full || 1 philo died
 	return (0);
 }
+
 
 
 /*

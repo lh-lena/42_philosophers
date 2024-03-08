@@ -6,7 +6,7 @@
 #    By: ohladkov <ohladkov@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/05 14:59:53 by ohladkov          #+#    #+#              #
-#    Updated: 2024/03/05 18:31:25 by ohladkov         ###   ########.fr        #
+#    Updated: 2024/03/07 22:21:34 by ohladkov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ OBGS	= $(SRCS:.c=.o)
 
 CC		= cc
 RM		= rm -f
-CFLAGS	= -Wall -Werror -Wextra -g -fsanitize=thread
+CFLAGS	= -Wall -Werror -Wextra -g
 # -pthread
 #-g -fsanitize=thread
 #-g -fsanitize=address

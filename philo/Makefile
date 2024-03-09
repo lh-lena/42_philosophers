@@ -6,7 +6,7 @@
 #    By: ohladkov <ohladkov@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/05 14:59:53 by ohladkov          #+#    #+#              #
-#    Updated: 2024/03/07 22:21:34 by ohladkov         ###   ########.fr        #
+#    Updated: 2024/03/09 23:31:14 by ohladkov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,9 +18,7 @@ OBGS	= $(SRCS:.c=.o)
 CC		= cc
 RM		= rm -f
 CFLAGS	= -Wall -Werror -Wextra -g
-# -pthread
 #-g -fsanitize=thread
-#-g -fsanitize=address
 #valgrind --tool=helgrind
 
 all:	$(NAME)
@@ -31,10 +29,10 @@ $(NAME):	$(OBGS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-# valgrind --tool=helgrind ./philo 5 800 200 200
-run:
-	valgrind --tool=helgrind ./philo 5 800 200 200
 
+run:
+	./philo 7 310 200 100
+ 
 clean:
 	$(RM) *.o
 

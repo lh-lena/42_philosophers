@@ -3,23 +3,23 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ohladkov <ohladkov@student.42berlin.de>    +#+  +:+       +#+         #
+#    By: ohladkov <ohladkov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/05 14:59:53 by ohladkov          #+#    #+#              #
-#    Updated: 2024/03/09 23:31:14 by ohladkov         ###   ########.fr        #
+#    Updated: 2024/03/10 14:17:13 by ohladkov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= philo
-SRCS	= *.c
-#SRCS	= philo.c ft_atoi.c ft_split.c print_err.c
+SRCS	= philo.c philo_utils.c is_valid.c print_err.c fork_utils.c actions.c \
+			init_data.c
 OBGS	= $(SRCS:.c=.o)
 
 CC		= cc
 RM		= rm -f
 CFLAGS	= -Wall -Werror -Wextra -g
-#-g -fsanitize=thread
-#valgrind --tool=helgrind
+#-fsanitize=thread
+#valgrind --tool=helgrind  
 
 all:	$(NAME)
 
@@ -29,10 +29,8 @@ $(NAME):	$(OBGS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+run: ./philo 7 800 300 200 2
 
-run:
-	./philo 7 310 200 100
- 
 clean:
 	$(RM) *.o
 

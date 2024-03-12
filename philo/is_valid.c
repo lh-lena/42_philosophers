@@ -6,7 +6,7 @@
 /*   By: ohladkov <ohladkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 18:14:21 by ohladkov          #+#    #+#             */
-/*   Updated: 2024/02/29 13:19:14 by ohladkov         ###   ########.fr       */
+/*   Updated: 2024/03/10 12:19:09 by ohladkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,19 +76,5 @@ long	ft_atoi(const char *str)
 		total += (*str - '0');
 		str++;
 	}
-	// is_valid(total * sign);
 	return (total * sign);
-}
-
-int		check_input(char **av)
-{
-	int	i;
-
-	i = 0;
-	while (av[++i])
-	{
-		if ((ft_isdigit_str(av[i])) != 0)
-			return (1);
-	}
-	return (0);
 }

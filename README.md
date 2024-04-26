@@ -2,7 +2,7 @@
 The Dining Philosophers problem written in C
 
 The Philosophers project at 42 Berlin is an implementation of the classic synchronization problem known as the Dining Philosophers problem. 
-In this project, we have create a simulation where a certain number of philosophers sit around a table, alternating between eating, sleeping and thinking, using thread and mutex.
+</br></br>In this project, we have create a simulation where a certain number of philosophers sit around a table, alternating between **eating**, **sleeping** and **thinking**, using **thread** and **mutex**.
 
 ### Installing and running the project:
 1. Clone the repository:
